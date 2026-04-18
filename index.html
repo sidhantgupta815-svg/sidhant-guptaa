@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>www.sidhantpremiumhost</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&family=Playfair+Display:ital,wght@1,600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+<style>
+/* --- Core Styles --- */
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{
+    min-height:100vh; display:flex; justify-content:center; align-items:center;
+    background: radial-gradient(circle at center, #1a2a6c, #b21f1f, #fdbb2d);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    overflow-x:hidden; font-family: 'Poppins', sans-serif; color: white;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.particle-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+
+/* Hearts & Balloons */
+.heart-particle { position: absolute; bottom: -100px; color: #ff7ac6; filter: drop-shadow(0 0 5px #ff4dc4); animation: floatUp linear infinite; }
+.balloon-particle { position: absolute; bottom: -120px; width: 40px; height: 55px; border-radius: 50%; animation: floatUp linear infinite; opacity: 0.8; }
+.balloon-particle::after { content: ''; position: absolute; bottom: -30px; left: 50%; width: 2px; height: 30px; background: rgba(255,255,255,0.3); }
+
+@keyframes floatUp {
+    0% { transform: translateY(0) scale(0.5); opacity: 0; }
+    10% { opacity: 0.8; }
+    100% { transform: translateY(-120vh) scale(1.2); opacity: 0; }
+}
+
+/* --- UI Elements --- */
+.main-heading {
+    font-family:'Playfair Display', serif; font-size: clamp(35px, 8vw, 65px); font-style:italic; 
+    color: #ffb6d9; text-shadow: 0 0 20px #ff4dc4; margin-bottom: 15px; text-align: center;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.1); padding: 40px; border-radius: 30px;
+    backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.2);
+    display: inline-block; max-width: 500px; width: 90%; text-align: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+.next-btn {
+    margin-top: 20px; padding: 12px 45px; border-radius: 30px;
+    border: 2px solid #ff4dc4; background: transparent; color: white;
+    font-weight: bold; cursor: pointer; transition: 0.4s; text-transform: uppercase; letter-spacing: 1px;
+}
+.next-btn:hover { background: #ff4dc4; box-shadow: 0 0 25px #ff4dc4; transform: scale(1.05); }
+
+.dots-container { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
+.dot { width: 8px; height: 8px; background: rgba(255, 255, 255, 0.3); border-radius: 50%; transition: 0.3s; }
+.dot.active { background: #ff4dc4; box-shadow: 0 0 10px #ff4dc4; width: 20px; border-radius: 10px; }
+
+/* Curtain & Bulbs */
+.light-string { position: absolute; top: 0; width: 100%; display: none; justify-content: space-around; padding: 10px; z-index: 10; }
+.bulb { width: 15px; height: 22px; background: #fff; border-radius: 50%; box-shadow: 0 0 15px #ff4dc4; animation: glow 1s infinite alternate; }
+@keyframes glow { from { opacity: 0.4; filter: brightness(1); } to { opacity: 1; filter: brightness(1.5); } }
+
+.curtain-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 100; pointer-events: none; }
+.curtain-half { position: absolute; top: 0; width: 50%; height: 100%; background: #5e0000; transition: 2s cubic-bezier(0.45, 0.05, 0.55, 0.95); }
+.left-curtain { left: 0; border-right: 3px solid #ffd700; }
+.right-curtain { right: 0; border-left: 3px solid #ffd700; }
+.open .left-curtain { transform: translateX(-100%); }
+.open .right-curtain { transform: translateX(100%); }
+
+/* Screens */
+#intro-screen, #special-day-screen, #ready-screen, #music-screen, #message-screen, #final-memories, #memory-gallery {
+    display: none; flex-direction: column; align-items: center; z-index: 5; animation: fadeIn 1.2s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Confetti */
+.confetti { position: absolute; width: 10px; height: 10px; background: #ffd700; animation: fall 4s linear forwards; z-index: 1000; }
+@keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+
+/* --- Memory Gallery Styles --- */
+#memory-gallery {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+}
+
+.gallery-title {
+    font-family: 'Dancing Script', cursive;
+    color: #ffb6d9;
+    font-size: 50px;
+    margin-bottom: 30px;
+    text-shadow: 0 0 15px #ff4dc4;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    width: 100%;
+    z-index: 10;
+}
+
+.memory-photo {
+    width: 100%;
+    height: 650px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+    transition: 0.5s;
+    cursor: pointer;
+    filter: sepia(30%);
+}
+
+.memory-photo:hover {
+    transform: scale(1.05) rotate(2deg);
+    border-color: #ff4dc4;
+    filter: sepia(0%);
+}
+
+/* Lightbox Styles */
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+    cursor: pointer;
+}
+
+.lightbox-content {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 15px;
+    border: 5px solid gold;
+    box-shadow: 0 0 30px rgba(255,215,0,0.5);
+}
+</style>
+</head>
+<body>
+
+<div class="particle-container" id="main-container"></div>
+
+<div class="curtain-container" id="gate">
+    <div class="curtain-half left-curtain"></div>
+    <div class="curtain-half right-curtain"></div>
+</div>
+
+<div class="light-string" id="bulbs">
+    <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+</div>
+
+<div class="container" id="intro-screen" style="display:flex;">
+    <h1 class="main-heading">Happy Anniversary Mama Mami</h1>
+    <p style="margin-bottom: 20px; letter-spacing: 2px;">A SPECIAL ANNIVERSARY WISH BY SIDHANT FOR MAMA & MAMI
+_CREATED JUST FOR YOU</p>
+    <button class="next-btn" onclick="show('intro-screen', 'special-day-screen')">OPEN YOUR GIFT</button>
+</div>
+
+<div id="special-day-screen" class="container">
+    <div class="card">
+        <h2 style="font-family: 'Dancing Script'; font-size: 35px;">It's Your Special Day</h2>
+        <p style="margin: 15px 0;">Happy Anniversary Mama Mami ❤️
+Forever together, forever happy..</p>
+        <button class="next-btn" onclick="show('special-day-screen', 'ready-screen')">CONTINUE</button>
+        <div class="dots-container"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+</div>
+
+<div id="ready-screen" class="container">
+    <div class="card">
+        <h2>Happy Anniversary❤️Deepak Mama & Nidhi Mami</h2>
+        <button class="next-btn" onclick="activateLights()">Happy Anniversary Mama Mami ❤️
+Forever together, forever happy..</button>
+        <div class="dots-container"><div class="dot"></div><div class="dot active"></div><div class="dot"></div></div>
+    </div>
+</div>
+
+<div id="music-screen" class="container">
+    <div class="card">
+        <h2 style="font-family: 'Playfair Display';">Ready for your Surprise ?</h2>
+        <p>Close your eyes for a second.</p>
+        <button class="next-btn" onclick="show('music-screen', 'message-screen')">NEXT</button>
+        <div class="dots-container"><div class="dot"></div><div class="dot"></div><div class="dot active"></div></div>
+    </div>
+</div>
+
+<div id="message-screen" class="container">
+    <div class="card">
+        <h2>Almost There</h2>
+        <p>Tap the button to see your special anniversary wish ❤️</p>
+        <button class="next-btn" onclick="triggerGate()">💫SHOW THE MESSAGE</button>
+    </div>
+</div>
+
+<div id="final-memories" class="container">
+    <div class="card">
+        <h1 style="font-family:'Dancing Script'; color:#ff7ac6; font-size:50px;">Happy Anniversary Deepak Mama & Nidhi Mami</h1>
+        <p style="margin-top:20px; line-height:1.7; font-weight: 300;">
+           Dear Mama & Mami,
+Wishing you a journey filled with happiness,
+endless smiles, and beautiful moments together.
+May every year add more joy to your life.
+        </p>
+        <button class="next-btn" onclick="openGallery()" style="border-color: gold; color: gold;">OUR MEMORIES ✨</button>
+    </div>
+</div>
+
+<div id="memory-gallery">
+    <h1 class="gallery-title">Moments in Time</h1>
+    <div class="gallery-grid">
+        <div class="memory-photo" style="background-image: url(mami.jpeg);" onclick="openLightbox(this)"></div>
+        <div class="memory-photo" style="background-image: url('bich.jpeg');" onclick="openLightbox(this)"></div>
+        <div class="memory-photo" style="background-image: url('mama.jpeg');" onclick="openLightbox(this)"></div>
+        <div class="memory-photo" style="background-image: url('rose.jpeg');" onclick="openLightbox(this)"></div>
+        <div class="memory-photo" style="background-image: url('thawe.jpeg');" onclick="openLightbox(this)"></div>
+        <div class="memory-photo" style="background-image: url('grand.jpeg');" onclick="openLightbox(this)"></div>
+         <div class="memory-photo" style="background-image: url('sm.jpeg');" onclick="openLightbox(this)"></div>
+        <div class="memory-photo" style="background-image: url('sm3.jpeg');" onclick="openLightbox(this)"></div>
+         <div class="memory-photo" style="background-image: url('sm2.jpeg');" onclick="openLightbox(this)"></div>
+    </div>
+    <button class="next-btn" onclick="show('memory-gallery', 'final-memories')" style="margin-top: 50px; z-index: 10;">BACK</button>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <img src="" alt="Radhika" class="lightbox-content" id="lightbox-img">
+</div>
+
+<script>
+// --- Navigation Logic ---
+function show(hideId, showId) {
+    document.getElementById(hideId).style.display = "none";
+    document.getElementById(showId).style.display = "flex";
+    // Scroll to top when showing gallery
+    if (showId === 'memory-gallery') {
+        window.scrollTo(0, 0);
+    }
+}
+
+function activateLights() {
+    show('ready-screen', 'music-screen');
+    document.getElementById('bulbs').style.display = "flex";
+}
+
+function triggerGate() {
+    const gate = document.getElementById('gate');
+    gate.style.display = "block";
+    setTimeout(() => {
+        gate.classList.add('open');
+        show('message-screen', 'final-memories');
+        createBalloons();
+        celebrate(); // Initial burst
+    }, 100);
+}
+
+function openGallery() {
+    show('final-memories', 'memory-gallery');
+    celebrate(); // Celebration when gallery opens
+}
+
+// --- Lightbox Logic ---
+function openLightbox(element) {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    // Extract image URL from background-image style
+    const bgImageUrl = element.style.backgroundImage.slice(5, -2);
+    lightboxImg.src = bgImageUrl;
+    lightbox.style.display = 'flex';
+    // Prevent body scrolling
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    const lightbox = document.getElementById('lightbox');
+    lightbox.style.display = 'none';
+    // Restore body scrolling
+    document.body.style.overflow = 'auto';
+    document.body.style.overflowX = 'hidden';
+}
+
+// --- Effects ---
+const container = document.getElementById('main-container');
+
+function createHearts() {
+    for(let i=0; i<35; i++) {
+        let h = document.createElement("div");
+        h.className = "heart-particle";
+        h.innerText = ['💖', '💗', '💓', '💕', '✨'][Math.floor(Math.random() * 5)];
+        h.style.left = Math.random() * 100 + "vw";
+        h.style.fontSize = (Math.random() * 20 + 15) + "px";
+        h.style.animationDuration = (5 + Math.random() * 10) + "s";
+        h.style.animationDelay = (Math.random() * 5) + "s";
+        container.appendChild(h);
+    }
+}
+createHearts();
+
+function createBalloons() {
+    // We keep some hearts but add balloons
+    const colors = ['#ff7ac6', '#ffb6d9', '#ffd6f6', '#ffd700', '#ff4dc4'];
+    for(let i=0; i<25; i++) {
+        let b = document.createElement("div");
+        b.className = "balloon-particle";
+        b.style.background = colors[Math.floor(Math.random() * colors.length)];
+        b.style.left = Math.random() * 100 + "vw";
+        b.style.animationDuration = (6 + Math.random() * 6) + "s";
+        b.style.animationDelay = (Math.random() * 10) + "s";
+        container.appendChild(b);
+    }
+}
+
+function celebrate() {
+    for (let i = 0; i < 50; i++) {
+        const conf = document.createElement('div');
+        conf.className = 'confetti';
+        conf.style.left = Math.random() * 100 + "vw";
+        conf.style.backgroundColor = ['#ff4dc4', '#ffd700', '#ffffff', '#ff7ac6'][Math.floor(Math.random()*4)];
+        conf.style.width = Math.random() * 10 + 5 + "px";
+        conf.style.height = conf.style.width;
+        conf.style.animationDuration = (Math.random() * 2 + 2) + "s";
+        document.body.appendChild(conf);
+        setTimeout(() => conf.remove(), 4000);
+    }
+}
+</script>
+
+</body>
+</html>
